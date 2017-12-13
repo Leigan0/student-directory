@@ -35,6 +35,7 @@ end
 
 def print(students)
   width = 65
+  return if  students.count < 1
   cohorts = students.map {|student| student[:cohort]}.uniq
   cohorts.each do |cohort|
     students.each do |student|
@@ -44,6 +45,7 @@ def print(students)
 end
 
 def print_footer(students)
+  return if  students.count < 1
   width = 65
   students.count > 1 ? puts("Overall, we have #{students.count} great students".center(width)) : puts("Overall, we have 1 great student")
 end
