@@ -10,7 +10,7 @@ def input_students
     puts "please enter student cohort, if blank cohort will default to november"
     cohort = gets.chomp
      until Date::MONTHNAMES.include?(cohort.capitalize) || cohort == ''
-       puts "Please enter a valid cohort"
+       puts "Please enter a valid cohort".center(width)
        cohort = gets.chomp
      end
      if cohort == ''
@@ -21,7 +21,7 @@ def input_students
     puts "Please enter student nationality".center(width)
     nationality = gets.chomp
     students << {name: name, cohort: cohort.downcase.to_sym, age: age, nationality: nationality}
-    puts "Now we have #{students.count} students".center(width)
+    students.count > 1 ? puts("Now we have #{students.count} students".center(width)) : puts("Now we have 1 student".center(width))
     name = gets.chomp
   end
   students
