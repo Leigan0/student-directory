@@ -1,8 +1,8 @@
-
+require 'date'
 
 def input_students
   width = 65
-  puts "Please enter students details".center(width)
+  puts "Please enter each students details, starting with student name".center(width)
   puts "To finish, just hit return twice".center(width)
   #create an empty array
   students = []
@@ -10,15 +10,22 @@ def input_students
   name = gets.chomp
   #while the name is not empty - repeat this code
   while !name.empty? do
+    puts "please enter student cohort, if blank cohort will default to november"
+    cohort = gets.chomp
+    if cohort == ''
+      cohort = :november
+    elsif !Date::MONTHNAMES.include?(cohort.capitalize)
+      puts "Please enter a valid cohort"
+      cohort = gets.chomp
+    end
     puts "Please enter student age".center(width)
     age = gets.chomp
     puts "Please enter student nationality".center(width)
     nationality = gets.chomp
-    students << {name: name, cohort: :november, age: age, nationality: nationality}
+    students << {name: name, cohort: cohort.downcase.to_sym, age: age, nationality: nationality}
     puts "Now we have #{students.count} students".center(width)
     name = gets.chomp
   end
-  #return array of students
   students
 end
 
