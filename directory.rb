@@ -37,11 +37,9 @@ def print(students)
   width = 65
   cohorts = students.map {|student| student[:cohort]}.uniq
   cohorts.each do |cohort|
-    students.each do |student|
-      if student[:cohort] == cohort
-        puts "#{student[:name]}, #{student[:age]}, #{student[:nationality]} (#{student[:cohort]} cohort)"
-      end
-    end
+    students.reject {|student| if student[:cohort] != cohort
+                      then puts "#{student[:name]}, #{student[:age]}, #{student[:nationality]}
+                      (#{student[:cohort]} cohort)" end }
   end
 end
 
