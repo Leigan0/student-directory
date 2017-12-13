@@ -37,15 +37,17 @@ def print(students)
   width = 65
   cohorts = students.map {|student| student[:cohort]}.uniq
   cohorts.each do |cohort|
-    students.reject {|student| if student[:cohort] != cohort
-                      then puts "#{student[:name]}, #{student[:age]}, #{student[:nationality]}
-                      (#{student[:cohort]} cohort)" end }
+    students.each do |student|
+      if student[:cohort] == cohort
+        puts "#{student[:name]}, #{student[:age]}, #{student[:nationality]} (#{student[:cohort]} cohort)"
+      end
+    end
   end
 end
 
 def print_footer(students)
   width = 65
-  puts "Overall, we have #{students.count} great students".center(width)
+  students.count > 1 ? puts("Overall, we have #{students.count} great students".center(width)) : puts("Overall, we have 1 great student")
 end
 
 students = input_students
