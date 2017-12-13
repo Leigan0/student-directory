@@ -4,11 +4,8 @@ def input_students
   width = 65
   puts "Please enter each students details, starting with student name".center(width)
   puts "To finish, just hit return twice".center(width)
-  #create an empty array
   students = []
-  #get first name
   name = gets.chomp
-  #while the name is not empty - repeat this code
   while !name.empty? do
     puts "please enter student cohort, if blank cohort will default to november"
     cohort = gets.chomp
@@ -38,18 +35,21 @@ end
 
 def print(students)
   width = 65
-  counter = 0
-  while counter < students.count
-        puts " #{counter+1}. #{students[counter][:name]}, #{students[counter][:age]}, #{students[counter][:nationality]} (#{students[counter][:cohort]} cohort)".center(width)
-      counter += 1
+  cohorts = students.map {|student| student[:cohort]}.uniq
+  cohorts.each do |cohort|
+    students.each do |student|
+      if student[:cohort] == cohort
+        puts "#{student[:name]}, #{student[:age]}, #{student[:nationality]} (#{student[:cohort]} cohort)"
+      end
     end
+  end
 end
 
 def print_footer(students)
   width = 65
   puts "Overall, we have #{students.count} great students".center(width)
 end
-#nothing happens until we call the methods
+
 students = input_students
 print_header
 print(students)
