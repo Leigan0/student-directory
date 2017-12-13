@@ -38,9 +38,7 @@ def print(students)
   cohorts = students.map {|student| student[:cohort]}.uniq
   cohorts.each do |cohort|
     students.each do |student|
-      if student[:cohort] == cohort
-        puts "#{student[:name]}, #{student[:age]}, #{student[:nationality]} (#{student[:cohort]} cohort)"
-      end
+      if student[:cohort] == cohort then puts "#{student[:name]}, #{student[:age]}, #{student[:nationality]} (#{student[:cohort]} cohort)" end
     end
   end
 end
