@@ -5,24 +5,24 @@ def input_students
   puts "Please enter each students details, starting with student name".center(width)
   puts "To finish, just hit return twice".center(width)
   students = []
-  name = gets.chomp
+  name = gets.delete("\n")
   while !name.empty? do
     puts "please enter student cohort, if blank cohort will default to november"
-    cohort = gets.chomp
+    cohort = gets.delete("\n")
      until Date::MONTHNAMES.include?(cohort.capitalize) || cohort == ''
        puts "Please enter a valid cohort".center(width)
-       cohort = gets.chomp
+       cohort = gets.delete("\n")
      end
      if cohort == ''
        cohort = :november
      end
     puts "Please enter student age".center(width)
-    age = gets.chomp
+    age = gets.delete("\n")
     puts "Please enter student nationality".center(width)
-    nationality = gets.chomp
+    nationality = gets.delete("\n")
     students << {name: name, cohort: cohort.downcase.to_sym, age: age, nationality: nationality}
     students.count > 1 ? puts("Now we have #{students.count} students".center(width)) : puts("Now we have 1 student".center(width))
-    name = gets.chomp
+    name = gets.delete("\n")
   end
   students
 end
