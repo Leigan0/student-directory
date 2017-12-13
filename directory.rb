@@ -12,12 +12,13 @@ def input_students
   while !name.empty? do
     puts "please enter student cohort, if blank cohort will default to november"
     cohort = gets.chomp
-    if cohort == ''
-      cohort = :november
-    elsif !Date::MONTHNAMES.include?(cohort.capitalize)
-      puts "Please enter a valid cohort"
-      cohort = gets.chomp
-    end
+     until Date::MONTHNAMES.include?(cohort.capitalize) || cohort == ''
+       puts "Please enter a valid cohort"
+       cohort = gets.chomp
+     end
+     if cohort == ''
+       cohort = :november
+     end
     puts "Please enter student age".center(width)
     age = gets.chomp
     puts "Please enter student nationality".center(width)
