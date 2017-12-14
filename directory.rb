@@ -100,8 +100,9 @@ end
 
 def try_load_students
   filename = ARGV.first # first argument from the command line
-  return if filename.nil? #get out of the method if it isn't given
-  if File.exists?(filename) #if it exists
+  if filename.nil?
+    load_students #loads default students.csv
+  elsif File.exists?(filename) #if it exists
     load_students(filename)
     puts "Loaded #{@students.count} from #{filename}"
   else #if it doesnt exist
@@ -110,7 +111,7 @@ def try_load_students
   end
 end
 
-def print_students_list
+def print_students_list #prints by cohort
   return if  @students.count < 1
   cohorts = @students.map {|student| student[:cohort]}.uniq
   cohorts.each do |cohort|
