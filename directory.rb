@@ -48,11 +48,7 @@ def input_students
        cohort = gets.delete("\n")
      end
     if cohort == ''then cohort = :november end
-    puts "Please enter student age".center(width)
-    age = gets.delete("\n")
-    puts "Please enter student nationality".center(width)
-    nationality = gets.delete("\n")
-    @students << {name: name, cohort: cohort.downcase.to_sym, age: age, nationality: nationality}
+    @students << {name: name, cohort: cohort.downcase.to_sym}
     @students.count > 1 ? puts("Now we have #{@students.count} students".center(width)) : puts("Now we have 1 student".center(width))
     name = gets.delete("\n")
   end
@@ -71,7 +67,7 @@ def print_students_list
   cohorts.each do |cohort|
     @students.each do |student|
       if student[:cohort] == cohort
-        puts "#{student[:name]}, #{student[:age]}, #{student[:nationality]} (#{student[:cohort]} cohort)"
+        puts "#{student[:name]} (#{student[:cohort]} cohort)"
       end
     end
   end
