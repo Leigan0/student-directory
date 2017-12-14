@@ -41,12 +41,16 @@ def interactive_menu
   end
 end
 
+def add_students(name,cohort)
+  @students << {name: name, cohort: cohort.downcase.to_sym}
+end
+
 def input_students
   input_instruction_text
   name = STDIN.gets.delete("\n")
   while !name.empty? do
     cohort = cohort_entry
-    @students << {name: name, cohort: cohort.downcase.to_sym}
+    add_students(name,cohort)
     @students.count > 1 ? puts("Now we have #{@students.count} students".center(@width)) : puts("Now we have 1 student".center(@width))
     name = STDIN.gets.delete("\n")
   end
@@ -64,12 +68,11 @@ def cohort_entry
     puts "Please enter a valid cohort".center(@width)
     cohort = STDIN.gets.delete("\n")
   end
-  if cohort == ''then cohort = :november end
+  if cohort == '' then cohort = :november end
   return cohort
 end
 
 def print_header
-  width = 65
   puts "The students of Villains Academy".center(@width)
   puts "-------------".center(@width)
 end
@@ -90,7 +93,7 @@ def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort =  line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+      add_students(name,cohort)
   end
   file.close
 end
