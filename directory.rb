@@ -1,7 +1,14 @@
 require 'date'
 
-@students = [] #an empty array accessible to all methods
+@students = []
 @width = 65
+
+def interactive_menu
+  loop do
+    print_menu
+    menu_option(STDIN.gets.chomp)
+  end
+end
 
 def print_menu
   puts "1. Input the students".center(@width)
@@ -11,13 +18,7 @@ def print_menu
   puts "9. Exit".center(@width)
 end
 
-def show_students
-  print_header
-  print_students_list
-  print_footer
-end
-
-def process(selection)
+def menu_option(selection)
   case selection
     when "1"
     input_students
@@ -34,59 +35,20 @@ def process(selection)
   end
 end
 
-def interactive_menu
-  loop do
-    print_menu
-    process(STDIN.gets.chomp)
+def try_load_students
+  filename = ARGV.first
+  if filename.nil?
+    load_students
+  elsif File.exists?(filename)
+    load_students(filename)
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
   end
 end
 
 def add_students(name,cohort)
   @students << {name: name, cohort: cohort.downcase.to_sym}
-end
-
-def input_students
-  input_instruction_text
-  name = STDIN.gets.delete("\n")
-  while !name.empty? do
-    cohort = cohort_entry
-    add_students(name,cohort)
-    @students.count > 1 ? puts("Now we have #{@students.count} students".center(@width)) : puts("Now we have 1 student".center(@width))
-    name = STDIN.gets.delete("\n")
-  end
-end
-
-def input_instruction_text
-  puts "Please enter each students details, starting with student name".center(@width)
-  puts "To finish, just hit return twice".center(@width)
-end
-
-def cohort_entry
-  puts "please enter student cohort, if blank cohort will default to november".center(@width)
-  cohort = STDIN.gets.delete("\n")
-  until Date::MONTHNAMES.include?(cohort.capitalize) || cohort == ''
-    puts "Please enter a valid cohort".center(@width)
-    cohort = STDIN.gets.delete("\n")
-  end
-  if cohort == '' then cohort = :november end
-  return cohort
-end
-
-def print_header
-  puts "The students of Villains Academy".center(@width)
-  puts "-------------".center(@width)
-end
-
-def save_students
-  #open the file for writing
-  file = File.open("students.csv","w")
-  #iterate over the array of students
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
-  end
-  file.close
 end
 
 def load_students(filename = "students.csv")
@@ -95,24 +57,59 @@ def load_students(filename = "students.csv")
     name, cohort =  line.chomp.split(',')
       add_students(name,cohort)
   end
+  puts "Loaded #{@students.count} from #{filename}".center(@width)
   file.close
 end
 
-def try_load_students
-  filename = ARGV.first # first argument from the command line
-  if filename.nil?
-    load_students #loads default students.csv
-  elsif File.exists?(filename) #if it exists
-    load_students(filename)
-    puts "Loaded #{@students.count} from #{filename}"
-  else #if it doesnt exist
-    puts "Sorry, #{filename} doesn't exist."
-    exit #quit the program
+def save_students
+  file = File.open("students.csv","w")
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
+end
+
+
+def input_students
+  input_instruction_text
+  name = STDIN.gets.chomp
+  while !name.empty? do
+    cohort = input_cohort_entry
+    add_students(name,cohort)
+    plural_students? ? puts("Now we have #{@students.count} students".center(@width)) : puts("Now we have 1 student".center(@width))
+    name = STDIN.gets.chomp
   end
 end
 
-def print_students_list #prints by cohort
-  return if  @students.count < 1
+def input_instruction_text
+  puts "Please enter each students details, starting with student name".center(@width)
+  puts "To finish, just hit return twice".center(@width)
+end
+
+def input_cohort_entry
+  puts "please enter student cohort, if blank cohort will default to november".center(@width)
+  cohort = STDIN.gets.chomp
+  until Date::MONTHNAMES.include?(cohort.capitalize) || cohort == ''
+    puts "Please enter a valid cohort".center(@width)
+    cohort = STDIN.gets.chomp
+  end
+  if cohort == '' then cohort = :november end
+  return cohort
+end
+
+def show_students
+  if @students.empty?
+    puts "No students enrolled"
+  else
+    print_header
+    print_students_list
+    print_footer
+  end
+end
+
+def print_students_list
   cohorts = @students.map {|student| student[:cohort]}.uniq
   cohorts.each do |cohort|
     @students.each do |student|
@@ -123,9 +120,17 @@ def print_students_list #prints by cohort
   end
 end
 
+def print_header
+  puts "The students of Villains Academy".center(@width)
+  puts "-------------".center(@width)
+end
+
 def print_footer
-  return if  @students.count == 0
-  @students.count > 1 ? puts("Overall, we have #{@students.count} great students".center(@width)) : puts("Overall, we have 1 great student".center(@width))
+  plural_students? ? puts("Overall, we have #{@students.count} great students".center(@width)) : puts("Overall, we have 1 great student".center(@width))
+end
+
+def plural_students?
+  @students.count > 1
 end
 
 try_load_students
