@@ -37,18 +37,18 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
 def input_students
   input_instruction_text
-  name = gets.delete("\n")
+  name = STDIN.gets.delete("\n")
   while !name.empty? do
     cohort = cohort_entry
     @students << {name: name, cohort: cohort.downcase.to_sym}
     @students.count > 1 ? puts("Now we have #{@students.count} students".center(@width)) : puts("Now we have 1 student".center(@width))
-    name = gets.delete("\n")
+    name = STDIN.gets.delete("\n")
   end
 end
 
@@ -59,10 +59,10 @@ end
 
 def cohort_entry
   puts "please enter student cohort, if blank cohort will default to november".center(@width)
-  cohort = gets.delete("\n")
+  cohort = STDIN.gets.delete("\n")
   until Date::MONTHNAMES.include?(cohort.capitalize) || cohort == ''
     puts "Please enter a valid cohort".center(@width)
-    cohort = gets.delete("\n")
+    cohort = STDIN.gets.delete("\n")
   end
   if cohort == ''then cohort = :november end
   return cohort
@@ -86,13 +86,25 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort =  line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
+end
+
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? #get out of the method if it isn't given
+  if File.exists?(filename) #if it exists
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else #if it doesnt exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit #quit the program
+  end
 end
 
 def print_students_list
@@ -112,4 +124,5 @@ def print_footer
   @students.count > 1 ? puts("Overall, we have #{@students.count} great students".center(@width)) : puts("Overall, we have 1 great student".center(@width))
 end
 
+try_load_students
 interactive_menu
