@@ -29,6 +29,7 @@ def menu_option(selection)
     when "4"
       load_students
     when "9"
+      puts "Goodbye!"
       exit
     else
       puts "I don't know what you meant, try again".center(@width)
@@ -68,6 +69,7 @@ def save_students
     csv_line = student_data.join(",")
     file.puts csv_line
   end
+  puts "Students succesfully saved to students.csv file".center(@width)
   file.close
 end
 
