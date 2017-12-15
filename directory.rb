@@ -64,24 +64,24 @@ def valid_file_name
 end
 
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    name, cohort =  line.chomp.split(',')
+  File.open(filename, "r") do |file|
+    file.readlines.each do |line|
+      name, cohort =  line.chomp.split(',')
       add_students(name,cohort)
+    end
   end
   puts "Loaded #{@students.count} #{plural_students? ? "students" : "student"} from #{filename}".center(@width)
-  file.close
 end
 
 def save_students(filename)
-  file = File.open(filename,"w")
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  File.open(filename,"w") do |file|
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
   end
   puts "Students succesfully saved to #{filename} file".center(@width)
-  file.close
 end
 
 
