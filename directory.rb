@@ -16,21 +16,17 @@ def print_menu
   puts "2. Show the students".center(@width)
   puts "3. Save the list to chosen file".center(@width)
   puts "4. Load the list chosen file".center(@width)
+  puts "5. Show students sorted by cohort".center(@width)
   puts "9. Exit".center(@width)
 end
 
 def menu_option(selection)
   case selection
-    when "1"
-    input_students
-    when "2"
-      show_students
-    when "3"
-      puts "Please enter the name of the file you wish to save to".center(@width)
-      save_students(valid_file_name)
-    when "4"
-      puts "Please enter the name of the file to load".center(@width)
-      load_students(valid_file_name)
+    when "1" then input_students
+    when "2" then show_students
+    when "3" then save_students(file_name_input)
+    when "4" then load_students(file_name_input)
+    when"5" then print_students_by_cohort
     when "9"
       puts "Goodbye!".center(@width)
       exit
@@ -39,7 +35,7 @@ def menu_option(selection)
   end
 end
 
-def try_load_students
+def startup_load_students
   filename = ARGV.first
   if filename.nil?
     load_students
@@ -55,10 +51,11 @@ def add_students(name,cohort)
   @students << {name: name, cohort: cohort.downcase.to_sym}
 end
 
-def valid_file_name
+def file_name_input
+  puts "Please enter file name".center(@width)
   filename = STDIN.gets.chomp
   until File.exists?(filename)
-    puts "please enter valid file name".center(@width)
+    puts "please enter existing file name".center(@width)
     filename = STDIN.gets.chomp
   end
   filename
@@ -69,7 +66,7 @@ def load_students(filename = "students.csv")
       name, cohort =  line
       add_students(name,cohort)
   end
-  puts "Loaded #{@students.count} #{plural_students? ? "students" : "student"} from #{filename}".center(@width)
+  puts "Loaded #{@students.count} student#{plural_students?}from #{filename}".center(@width)
 end
 
 def save_students(filename)
@@ -81,14 +78,13 @@ def save_students(filename)
   puts "Students succesfully saved to #{filename} file".center(@width)
 end
 
-
 def input_students
   input_instruction_text
   name = STDIN.gets.chomp
   while !name.empty? do
     cohort = input_cohort_entry
     add_students(name,cohort)
-    puts "Now we have #{@students.count} #{plural_students? ? "students" : "student"}".center(@width)
+    puts "Now we have #{@students.count} student#{plural_students?}".center(@width)
     name = STDIN.gets.chomp
   end
 end
@@ -120,6 +116,10 @@ def show_students
 end
 
 def print_students_list
+  @students.each {|student| puts "#{student[:name]} (#{student[:cohort]} cohort)".center(@width)}
+end
+
+def print_students_by_cohort
   cohorts = @students.map {|student| student[:cohort]}.uniq
   cohorts.each do |cohort|
     @students.each do |student|
@@ -136,12 +136,12 @@ def print_header
 end
 
 def print_footer
-puts "Overall, we have #{@students.count} great #{plural_students? ? "students" : "student"}".center(@width)
+puts "Overall, we have #{@students.count} great student#{plural_students?}".center(@width)
 end
 
 def plural_students?
-  @students.count > 1
+  @students.count > 1 ? "s" : ""
 end
 
-try_load_students
+startup_load_students
 interactive_menu
